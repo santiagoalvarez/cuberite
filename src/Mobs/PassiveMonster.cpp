@@ -14,7 +14,8 @@ cPassiveMonster::cPassiveMonster(const AString & a_ConfigName, eMonsterType a_Mo
 	m_LovePartner(nullptr),
 	m_LoveTimer(0),
 	m_LoveCooldown(0),
-	m_MatingTimer(0)
+	m_MatingTimer(0),
+	m_LeadActionJustDone(false)
 {
 	m_EMPersonality = PASSIVE;
 }
@@ -81,7 +82,7 @@ void cPassiveMonster::Destroyed()
 void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 {
 	super::Tick(a_Dt, a_Chunk);
-	if (!IsTicking())
+	if (!IsTicking() || ((m_TicksAlive % 10) != 0)) // only do this calcs twice per second
 	{
 		// The base class tick destroyed us
 		return;
@@ -135,19 +136,39 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 	}
 	else
 	{
-		// We have no partner, so we just chase the player if they have our breeding item
-		cItems FollowedItems;
-		GetFollowedItems(FollowedItems);
-		if (FollowedItems.Size() > 0)
-		{
-			cPlayer * a_Closest_Player = m_World->FindClosestPlayer(GetPosition(), static_cast<float>(m_SightDistance));
-			if (a_Closest_Player != nullptr)
+		// Mob tight to a player with a lead
+		cPawn * target = GetTarget();
+		if (target != nullptr)
+		{			
+			MoveToPosition(target->GetPosition());
+
+			// If distance to target > 10 break lead
+			Vector3f a_Distance(target->GetPosition() - GetPosition());
+			double Distance(a_Distance.Length());
+			if (Distance > 10.0)
 			{
-				cItem EquippedItem = a_Closest_Player->GetEquippedItem();
-				if (FollowedItems.ContainsType(EquippedItem))
+				LOGD("Lead broken");
+				SetTarget(nullptr);				
+				//TODO: send to player/s lead broken				
+			}
+			
+		} 
+		else
+		{
+			// We have no partner and no lead, so we just chase the player if they have our breeding item
+			cItems FollowedItems;
+			GetFollowedItems(FollowedItems);
+			if (FollowedItems.Size() > 0)
+			{
+				cPlayer * a_Closest_Player = m_World->FindClosestPlayer(GetPosition(), static_cast<float>(m_SightDistance));
+				if (a_Closest_Player != nullptr)
 				{
-					Vector3d PlayerPos = a_Closest_Player->GetPosition();
-					MoveToPosition(PlayerPos);
+					cItem EquippedItem = a_Closest_Player->GetEquippedItem();
+					if (FollowedItems.ContainsType(EquippedItem))
+					{
+						Vector3d PlayerPos = a_Closest_Player->GetPosition();
+						MoveToPosition(PlayerPos);
+					}
 				}
 			}
 		}
@@ -223,10 +244,11 @@ void cPassiveMonster::OnRightClicked(cPlayer & a_Player)
 {
 	super::OnRightClicked(a_Player);
 
+	short HeldItem = a_Player.GetEquippedItem().m_ItemType;
+
 	// If a player holding breeding items right-clicked me, go into love mode
 	if ((m_LoveCooldown == 0) && !IsInLove() && !IsBaby())
 	{
-		short HeldItem = a_Player.GetEquippedItem().m_ItemType;
 		cItems Items;
 		GetBreedingItems(Items);
 		if (Items.ContainsType(HeldItem))
@@ -239,6 +261,26 @@ void cPassiveMonster::OnRightClicked(cPlayer & a_Player)
 			m_World->BroadcastEntityStatus(*this, esMobInLove);
 		}
 	}
+
+	// Using leads
+	m_LeadActionJustDone = false;
+	if ((GetTarget() != nullptr) /*&& (GetTarget()->GetUniqueID() == a_Player.GetUniqueID())*/)
+	{
+		LOGD("Mob unleashed");					
+		cItems Pickups;
+		Pickups.Add(cItem(E_ITEM_LEAD, 1, 0));
+		GetWorld()->SpawnItemPickups(Pickups, GetPosX() + 0.5, GetPosY() + 0.5, GetPosZ() + 0.5);
+		SetTarget(nullptr);
+		m_LeadActionJustDone = true;
+	}
+	else if (HeldItem == E_ITEM_LEAD)		
+	{
+		LOGD("Mob leashed");
+		a_Player.GetInventory().RemoveOneEquippedItem();
+		SetTarget(&a_Player);
+		m_LeadActionJustDone = true;
+	}
+
 }
 
 

@@ -819,10 +819,18 @@ void cNBTChunkSerializer::AddItemFrameEntity(cItemFrame * a_ItemFrame)
 		m_Writer.AddFloat("ItemDropChance", 1.0F);
 	m_Writer.EndCompound();
 }
-
-
-
-
+/*
+void cNBTChunkSerializer::AddLeashKnotEntity(cLeashKnot * a_LeashKnot)
+{
+	m_Writer.BeginCompound("");
+	AddBasicEntity(a_LeashKnot, "LeashKnot");
+	AddHangingEntity(a_LeashKnot);
+	//AddItem(a_ItemFrame->GetItem(), -1, "Item");
+	//m_Writer.AddByte("ItemRotation", static_cast<Byte>(a_ItemFrame->GetItemRotation()));
+	//m_Writer.AddFloat("ItemDropChance", 1.0F);
+	m_Writer.EndCompound();
+}
+*/
 
 void cNBTChunkSerializer::AddPaintingEntity(cPainting * a_Painting)
 {
@@ -935,6 +943,7 @@ void cNBTChunkSerializer::Entity(cEntity * a_Entity)
 		case cEntity::etTNT:          AddTNTEntity         (reinterpret_cast<cTNTEntity *>       (a_Entity)); break;
 		case cEntity::etExpOrb:       AddExpOrbEntity      (reinterpret_cast<cExpOrb *>          (a_Entity)); break;
 		case cEntity::etItemFrame:    AddItemFrameEntity   (reinterpret_cast<cItemFrame *>       (a_Entity)); break;
+		//case cEntity::etLeashKnot:    AddLeashKnotEntity   (reinterpret_cast<cLeashKnot *>       (a_Entity)); break;
 		case cEntity::etPainting:     AddPaintingEntity    (reinterpret_cast<cPainting *>        (a_Entity)); break;
 		case cEntity::etPlayer: return;  // Players aren't saved into the world
 		case cEntity::etFloater: return;  // Floaters aren't saved either

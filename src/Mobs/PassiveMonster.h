@@ -59,6 +59,9 @@ protected:
 
 	/** The monster is engaged in mating, once this reaches zero, a baby will be born. Decrements by 1 per tick till reaching zero, then a baby is made and ResetLoveMode() is called. */
 	int m_MatingTimer;
+
+	/** Mob has ben leashed or unleashed in current player action. Avoids double actions on horses. */
+	bool m_LeadActionJustDone;
 };
 
 
