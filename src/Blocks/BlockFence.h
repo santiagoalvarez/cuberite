@@ -58,9 +58,9 @@ public:
 			cPlayer * m_Player;
 			bool m_KnotExists;
 
-			LookForLeasheds(cLeashKnot * a_Knot, cPlayer * a_Player, bool a_KnotExists) :
+			LookForLeasheds(cLeashKnot * a_Knot, cPlayer * a_PlayerLeashedTo, bool a_KnotExists) :
 				m_Knot(a_Knot),
-				m_Player(a_Player),
+				m_Player(a_PlayerLeashedTo),
 				m_KnotExists(a_KnotExists)
 			{
 			}
