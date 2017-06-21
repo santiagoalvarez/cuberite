@@ -124,15 +124,13 @@ void cLeashKnot::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 	{
 		if (m_SelfDestroy)
 		{
+			m_TicksToSelfDestroy -= TICK_STEP;
+
 			if (m_TicksToSelfDestroy <= 0)
 			{
 				Destroy();
 				m_World->BroadcastSoundEffect("entity.leashknot.break", GetPosX(), GetPosY(), GetPosZ(), 1, 1);
-			}
-			else
-			{
-				m_TicksToSelfDestroy -= TICK_STEP;
-			}
+			}			
 		}
 		else
 		{
