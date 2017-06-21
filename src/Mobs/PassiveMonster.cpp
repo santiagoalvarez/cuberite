@@ -119,7 +119,7 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 		return;
 	}
 
-	// This mob just spotted in the world and should be leahed to an entity
+	// This mob just spotted in the world and should be leashed to an entity
 	if (!IsLeashed() && (m_LeashToPos != nullptr))
 	{
 		LOGD("Mob was leashed to pos %f, %f, %f, looking for leash knot...", m_LeashToPos->x, m_LeashToPos->y, m_LeashToPos->z);

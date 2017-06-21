@@ -2010,7 +2010,7 @@ void cWSSAnvil::LoadItemFrameFromNBT(cEntityList & a_Entities, const cParsedNBT 
 	a_Entities.push_back(ItemFrame.release());
 }
 
-//TODO: load LeashKnots
+
 
 
 
