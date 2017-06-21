@@ -103,11 +103,6 @@
 
 #include "LeakFinder.h"
 
-// Currently only tested with MS VC++ 5 to 2015
-#if (_MSC_VER < 1100) || (_MSC_VER > 1900)
-	#error Only MS VC++ 5/6/7/7.1/8/9/10/11/12 supported. Check if the '_CrtMemBlockHeader' has not changed with this compiler!
-#endif
-
 
 /* _X: MSVC 2012 (MSC 1700) seems to use a different allocation scheme for STL containers,
 * allocating lots of small objects and running out of memory very soon

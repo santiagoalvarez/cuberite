@@ -126,7 +126,7 @@ protected:
 	void AddTNTEntity         (cTNTEntity * a_TNT);
 	void AddExpOrbEntity      (cExpOrb * a_ExpOrb);
 	void AddItemFrameEntity   (cItemFrame * a_ItemFrame);
-	//void AddLeashKnotEntity   (cLeashKnot * a_LeashKnot);
+	void AddLeashKnotEntity   (cLeashKnot * a_LeashKnot);
 	void AddPaintingEntity    (cPainting * a_Painting);
 
 	void AddMinecartChestContents(cMinecartWithChest * a_Minecart);

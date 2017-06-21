@@ -74,6 +74,8 @@ public:
 	virtual void CheckEventSeePlayer(cChunk & a_Chunk);
 	virtual void EventSeePlayer(cPlayer * a_Player, cChunk & a_Chunk);
 
+	virtual bool IsLeashed() const { return false; }
+
 	/** Reads the monster configuration for the specified monster name and assigns it to this object. */
 	void GetMonsterConfig(const AString & a_Name);
 

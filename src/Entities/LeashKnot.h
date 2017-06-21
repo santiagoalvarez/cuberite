@@ -21,28 +21,17 @@ public:
 
 	cLeashKnot(eBlockFace a_BlockFace, double a_X, double a_Y, double a_Z);
 
-	// tolua_begin
-
-	/** Returns the item in the frame */
-	//const cItem & GetItem(void) const { return m_Item; }
-
-	/** Set the item in the frame */
-	//void SetItem(cItem & a_Item) { m_Item = a_Item; }
-
-	/** Returns the rotation from the item in the frame */
-	//Byte GetItemRotation(void) const { return m_ItemRotation; }
-
-	/** Set the rotation from the item in the frame */
-	//void SetItemRotation(Byte a_ItemRotation) { m_ItemRotation = a_ItemRotation; }
-
-	// tolua_end
-
 private:
 
 	virtual void OnRightClicked(cPlayer & a_Player) override;
 	virtual void KilledBy(TakeDamageInfo & a_TDI) override;
 	virtual void GetDrops(cItems & a_Items, cEntity * a_Killer) override;
 	virtual void SpawnOn(cClientHandle & a_ClientHandle) override;
+	virtual void Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk) override;	
+
+	/** When a fence is destroyed, the knot on it gets destroyed after a while. This flag turns on the countdown to self destroy. */
+	bool m_SelfDestroy;
+	int m_TicksToSelfDestroy;
 
 };  // tolua_export
 

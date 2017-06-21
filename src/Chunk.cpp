@@ -600,7 +600,7 @@ void cChunk::SpawnMobs(cMobSpawner & a_MobSpawner)
 		double ActualX = WorldX + 0.5;
 		double ActualZ = WorldZ + 0.5;
 		newMob->SetPosition(ActualX, WorldY, ActualZ);
-		LOGD("Spawning %s #%i at {%d, %d, %d}", newMob->GetClass(), newMob->GetUniqueID(), WorldX, WorldY, WorldZ);
+		//LOGD("Spawning %s #%i at {%d, %d, %d}", newMob->GetClass(), newMob->GetUniqueID(), WorldX, WorldY, WorldZ);
 		NumberOfSuccess++;
 	}  // while (retry)
 }
@@ -2578,6 +2578,28 @@ void cChunk::BroadcastAttachEntity(const cEntity & a_Entity, const cEntity & a_V
 	{
 		ClientHandle->SendAttachEntity(a_Entity, a_Vehicle);
 	}  // for itr - LoadedByClient[]
+}
+
+
+
+
+void cChunk::BroadcastLeashEntity(const cEntity & a_Entity, const cEntity & a_EntityLeashedTo)
+{
+	for (auto ClientHandle : m_LoadedByClient)
+	{
+		ClientHandle->SendLeashEntity(a_Entity, a_EntityLeashedTo);
+	}
+}
+
+
+
+
+void cChunk::BroadcastUnleashEntity(const cEntity & a_Entity)
+{
+	for (auto ClientHandle : m_LoadedByClient)
+	{
+		ClientHandle->SendUnleashEntity(a_Entity);
+	}
 }
 
 

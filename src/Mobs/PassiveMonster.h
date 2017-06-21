@@ -18,6 +18,9 @@ public:
 	virtual void Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk) override;
 	virtual void OnRightClicked(cPlayer & a_Player) override;
 
+	/** When spawn to client check if it's leashed to send leash packet */
+	virtual void SpawnOn(cClientHandle & a_Client) override;
+
 	/** When hit by someone, run away */
 	virtual bool DoTakeDamage(TakeDamageInfo & a_TDI) override;
 
@@ -45,7 +48,22 @@ public:
 	/** Returns whether the monster is tired of breeding and is in the cooldown state. */
 	bool IsInLoveCooldown() const { return (m_LoveCooldown > 0); }
 
-	virtual void Destroyed(void) override;
+	virtual void Destroy(bool a_ShouldBroadcast = true) override;
+
+	/** Returns whether the monster is leashed to an entity. */
+	virtual bool IsLeashed() const { return (m_LeashedTo != nullptr); }
+
+	/** Leash the monster to a entity. */
+	void SetLeashedTo(cEntity * a_Entity);
+
+	/** Unleash the monster from a entity. */
+	void SetUnleashed(bool a_DropPickup);
+
+	/** Returns the entity to where is leashed this mob, returns nullptr if it's not leashed */
+	cEntity * GetLeashedTo() const { return m_LeashedTo; }
+
+	/** Sets entity UUID to where is leashed this mob */
+	void SetLeashToPos(Vector3d * pos) { m_LeashToPos = pos; }
 
 protected:
 	/** The monster's breeding partner. */
@@ -59,6 +77,12 @@ protected:
 
 	/** The monster is engaged in mating, once this reaches zero, a baby will be born. Decrements by 1 per tick till reaching zero, then a baby is made and ResetLoveMode() is called. */
 	int m_MatingTimer;
+
+	/** Entity leashed to */
+	cEntity * m_LeashedTo;
+
+	/** Entity pos leashed to, for leash knots */
+	Vector3d * m_LeashToPos;
 
 	/** Mob has ben leashed or unleashed in current player action. Avoids double actions on horses. */
 	bool m_LeadActionJustDone;

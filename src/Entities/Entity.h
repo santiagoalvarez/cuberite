@@ -41,6 +41,7 @@ class cWorld;
 class cClientHandle;
 class cPlayer;
 class cChunk;
+class cPassiveMonster;
 
 
 
@@ -262,7 +263,7 @@ public:
 	bool IsTicking(void) const;
 
 	/** Destroys the entity and schedules it for memory freeing; if a_ShouldBroadcast is set to true, broadcasts the DestroyEntity packet */
-	void Destroy(bool a_ShouldBroadcast = true);
+	virtual void Destroy(bool a_ShouldBroadcast = true);
 
 	/** Makes this pawn take damage from an attack by a_Attacker. Damage values are calculated automatically and DoTakeDamage() called */
 	void TakeDamage(cEntity & a_Attacker);
@@ -508,6 +509,15 @@ public:
 	/** Set the entity's status to either ticking or not ticking. */
 	void SetIsTicking(bool a_IsTicking);
 
+	/** Adds a mob to the leashed list of mobs */
+	void AddLeashedMob(cPassiveMonster * a_PassiveMonster, bool broadcast = true);
+
+	/** Removes a mob to the leashed list of mobs */
+	void RemoveLeashedMob(cPassiveMonster * a_PassiveMonster, bool dropPickup, bool broadcast = true);
+
+	/** Returs whether the entity has any mob leashed to */
+	bool HasAnyMobLeashed() const { return m_LeashedMobs.size() > 0; }
+
 protected:
 	/** Structure storing the portal delay timer and cooldown boolean */
 	struct sPortalCooldownData
@@ -660,6 +670,11 @@ private:
 	/** If a player hit a entity, the entity receive a invulnerable of 10 ticks.
 	While this ticks, a player can't hit this entity. */
 	int m_InvulnerableTicks;
+
+	typedef std::list<cPassiveMonster *> cPassiveMonsterList;
+
+	/** List of leashed mobs to this entity */
+	cPassiveMonsterList m_LeashedMobs;
 } ;  // tolua_export
 
 typedef std::list<cEntity *> cEntityList;

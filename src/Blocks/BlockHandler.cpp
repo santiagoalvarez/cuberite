@@ -231,6 +231,7 @@ cBlockHandler * cBlockHandler::CreateBlockHandler(BLOCKTYPE a_BlockType)
 		case E_BLOCK_ENCHANTMENT_TABLE:             return new cBlockEnchantmentTableHandler(a_BlockType);
 		case E_BLOCK_ENDER_CHEST:                   return new cBlockEnderchestHandler      (a_BlockType);
 		case E_BLOCK_FARMLAND:                      return new cBlockFarmlandHandler        (a_BlockType);
+		case E_BLOCK_FENCE:                         return new cBlockFenceHandler           (a_BlockType);
 		case E_BLOCK_FROSTED_ICE:                   return new cBlockIceHandler             (a_BlockType);
 		case E_BLOCK_FIRE:                          return new cBlockFireHandler            (a_BlockType);
 		case E_BLOCK_FLOWER_POT:                    return new cBlockFlowerPotHandler       (a_BlockType);

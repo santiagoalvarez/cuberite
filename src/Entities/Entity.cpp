@@ -14,6 +14,7 @@
 #include "Items/ItemHandler.h"
 #include "../FastRandom.h"
 #include "../NetherPortalScanner.h"
+#include "../Mobs/PassiveMonster.h"
 
 
 
@@ -157,6 +158,15 @@ bool cEntity::Initialize(cWorld & a_World)
 	// Spawn the entity on the clients:
 	a_World.BroadcastSpawnEntity(*this);
 
+	// If has any mob leashed broadcast every leashed entity to this
+	if (HasAnyMobLeashed())
+	{
+		for (auto LeashedMob : m_LeashedMobs)
+		{
+			m_World->BroadcastLeashEntity(*LeashedMob, *this);
+		}
+	}
+
 	return true;
 }
 
@@ -216,6 +226,14 @@ void cEntity::Destroy(bool a_ShouldBroadcast)
 	ASSERT(GetParentChunk() != nullptr);
 	SetIsTicking(false);
 
+	// Unleash leashed mobs	
+	for (auto LeashedMob : m_LeashedMobs)
+	{
+		LeashedMob->SetUnleashed(true);
+		m_World->BroadcastUnleashEntity(*LeashedMob);
+	}
+	m_LeashedMobs.clear();
+
 	if (a_ShouldBroadcast)
 	{
 		m_World->BroadcastDestroyEntity(*this);
@@ -224,10 +242,12 @@ void cEntity::Destroy(bool a_ShouldBroadcast)
 	cChunk * ParentChunk = GetParentChunk();
 	m_World->QueueTask([this, ParentChunk](cWorld & a_World)
 	{
+		/*
 		LOGD("Destroying entity #%i (%s) from chunk (%d, %d)",
 			this->GetUniqueID(), this->GetClass(),
 			ParentChunk->GetPosX(), ParentChunk->GetPosZ()
 		);
+		*/
 		ParentChunk->RemoveEntity(this);
 		delete this;
 	});
@@ -2242,3 +2262,38 @@ void cEntity::SetPosition(const Vector3d & a_Position)
 
 
 
+
+void cEntity::AddLeashedMob(cPassiveMonster * a_PassiveMonster, bool broadcast)
+{
+	// Not there already
+	ASSERT(std::find(m_LeashedMobs.begin(), m_LeashedMobs.end(), a_PassiveMonster) == m_LeashedMobs.end());
+	
+	LOGD("Adding mob to entity's leashed list");
+	a_PassiveMonster->SetLeashedTo(this);
+	m_LeashedMobs.push_back(a_PassiveMonster);
+
+	if (broadcast)
+	{
+		m_World->BroadcastLeashEntity(*a_PassiveMonster, *this);
+	}
+}
+
+
+
+
+void cEntity::RemoveLeashedMob(cPassiveMonster * a_PassiveMonster, bool a_DropPickup, bool broadcast)
+{
+	ASSERT(a_PassiveMonster->GetLeashedTo() == this);
+
+	// Must exists
+	ASSERT(std::find(m_LeashedMobs.begin(), m_LeashedMobs.end(), a_PassiveMonster) != m_LeashedMobs.end());
+
+	LOGD("Removing mob from entity's leashed list");
+	a_PassiveMonster->SetUnleashed(a_DropPickup);
+	m_LeashedMobs.remove(a_PassiveMonster);
+
+	if (broadcast)
+	{
+		m_World->BroadcastUnleashEntity(*a_PassiveMonster);
+	}
+}
