@@ -228,7 +228,7 @@ void cEntity::Destroy(bool a_ShouldBroadcast)
 	ASSERT(GetParentChunk() != nullptr);
 	SetIsTicking(false);
 
-	// Unleash leashed mobs	
+	// Unleash leashed mobs
 	for (auto LeashedMob : m_LeashedMobs)
 	{
 		LeashedMob->SetUnleashed(true);
@@ -244,12 +244,10 @@ void cEntity::Destroy(bool a_ShouldBroadcast)
 	cChunk * ParentChunk = GetParentChunk();
 	m_World->QueueTask([this, ParentChunk](cWorld & a_World)
 	{
-		/*
 		LOGD("Destroying entity #%i (%s) from chunk (%d, %d)",
 			this->GetUniqueID(), this->GetClass(),
 			ParentChunk->GetPosX(), ParentChunk->GetPosZ()
 		);
-		*/
 		ParentChunk->RemoveEntity(this);
 		delete this;
 	});
@@ -2269,7 +2267,7 @@ void cEntity::AddLeashedMob(cPassiveMonster * a_PassiveMonster, bool broadcast)
 {
 	// Not there already
 	ASSERT(std::find(m_LeashedMobs.begin(), m_LeashedMobs.end(), a_PassiveMonster) == m_LeashedMobs.end());
-	
+
 	LOGD("Adding mob to entity's leashed list");
 	a_PassiveMonster->SetLeashedTo(this);
 	m_LeashedMobs.push_back(a_PassiveMonster);

@@ -3227,21 +3227,25 @@ bool cWSSAnvil::LoadMonsterBaseFromNBT(cMonster & a_Monster, const cParsedNBT & 
 	{
 		Leashed = a_NBT.GetByte(LeashedIdx);
 
-		if (Leashed) {
+		if (Leashed)
+		{
 			int LeashIdx = a_NBT.FindChildByName(a_TagIdx, "Leash");
-			if (LeashIdx >= 0) {
-
+			if (LeashIdx >= 0)
+			{
 				double PosX, PosY, PosZ;
 				int LeashDataLine = a_NBT.FindChildByName(LeashIdx, "X");
-				if (LeashDataLine >= 0) {
+				if (LeashDataLine >= 0)
+				{
 					PosX = a_NBT.GetDouble(LeashDataLine);
 				}
 				LeashDataLine = a_NBT.FindChildByName(LeashIdx, "Y");
-				if (LeashDataLine >= 0) {
+				if (LeashDataLine >= 0)
+				{
 					PosY = a_NBT.GetDouble(LeashDataLine);
 				}
 				LeashDataLine = a_NBT.FindChildByName(LeashIdx, "Z");
-				if (LeashDataLine >= 0) {
+				if (LeashDataLine >= 0)
+				{
 					PosZ = a_NBT.GetDouble(LeashDataLine);
 				}
 

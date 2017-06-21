@@ -130,7 +130,7 @@ void cLeashKnot::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 			{
 				Destroy();
 				m_World->BroadcastSoundEffect("entity.leashknot.break", GetPosX(), GetPosY(), GetPosZ(), 1, 1);
-			}			
+			}
 		}
 		else
 		{

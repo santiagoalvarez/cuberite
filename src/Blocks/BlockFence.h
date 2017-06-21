@@ -20,9 +20,9 @@ public:
 	}
 
 	virtual bool OnUse(cChunkInterface & a_ChunkInterface, cWorldInterface & a_WorldInterface, cPlayer * a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, eBlockFace a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ) override
-	{	
+	{
 		// this vector allows to store the reference to an existing knot, if found inside the callback function
-		std::vector<cLeashKnot *> LeashKnotList;		
+		std::vector<cLeashKnot *> LeashKnotList;
 
 		// check if already exists a knot there
 		class LookForKnots : public cEntityCallback
@@ -38,16 +38,16 @@ public:
 			virtual bool Item(cEntity * a_Entity) override
 			{
 				if (a_Entity->IsLeashKnot())
-				{						
+				{
 					m_LeashKnotList->push_back(reinterpret_cast<cLeashKnot *>(a_Entity));
-					return true; // this makes ForEachEntityInBox call to return false, so we can know if a knot was found without checking list size
+					return true;  // this makes ForEachEntityInBox call to return false, so we can know if a knot was found without checking list size
 				}
 				return false;
 			}
 		} CallbackFindKnot(& LeashKnotList);
 		bool AlreadyExistsAKnot = !a_Player->GetWorld()->ForEachEntityInBox(cBoundingBox(new Vector3d(a_BlockX, a_BlockY, a_BlockZ), 0.5, 1), CallbackFindKnot);
-		
-		// Reuse / create the leash knot	
+
+		// Reuse / create the leash knot
 		cLeashKnot * LeashKnot = (AlreadyExistsAKnot ? LeashKnotList.front() : new cLeashKnot(a_BlockFace, a_BlockX, a_BlockY, a_BlockZ));
 
 		// Check leashed nearby mobs to leash them to the knot
@@ -82,14 +82,14 @@ public:
 				}
 
 				// If it's not leashed to the player skip it
-				if ((!PotentialLeashed->IsLeashed()) || (!PotentialLeashed->GetLeashedTo()->IsPlayer()) 
+				if ((!PotentialLeashed->IsLeashed()) || (!PotentialLeashed->GetLeashedTo()->IsPlayer())
 					|| (PotentialLeashed->GetLeashedTo()->GetUniqueID() != m_Player->GetUniqueID()))
 				{
 					return false;
 				}
 
 				// All conditions met, unleash from player and leash to fence
-				PotentialLeashed->GetLeashedTo()->RemoveLeashedMob(PotentialLeashed, false, false);				
+				PotentialLeashed->GetLeashedTo()->RemoveLeashedMob(PotentialLeashed, false, false);
 				m_Knot->AddLeashedMob(PotentialLeashed, m_KnotExists);
 				return false;
 			}
@@ -100,7 +100,8 @@ public:
 		if (!AlreadyExistsAKnot)
 		{
 			// Only put the knot in the world if any mob has been leashed to
-			if (LeashKnot->HasAnyMobLeashed()) {
+			if (LeashKnot->HasAnyMobLeashed())
+			{
 				if (!LeashKnot->Initialize(*a_Player->GetWorld()))
 				{
 					delete LeashKnot;

@@ -85,7 +85,7 @@ void cPassiveMonster::SpawnOn(cClientHandle & a_Client)
 
 
 void cPassiveMonster::Destroy(bool a_ShouldBroadcast)
-{	
+{
 	if (IsLeashed())
 	{
 		cEntity * LeashedTo = GetLeashedTo();
@@ -113,7 +113,7 @@ void cPassiveMonster::Destroy(bool a_ShouldBroadcast)
 void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 {
 	super::Tick(a_Dt, a_Chunk);
-	if (!IsTicking() || ((m_TicksAlive % TICK_STEP) != 0)) // only do this calcs twice per second
+	if (!IsTicking() || ((m_TicksAlive % TICK_STEP) != 0))  // only do this calcs twice per second
 	{
 		// The base class tick destroyed us
 		return;
@@ -139,13 +139,13 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 				if (a_Entity->IsLeashKnot())
 				{
 					LOGD("Leash knot found");
-					a_Entity->AddLeashedMob(m_Monster);											
+					a_Entity->AddLeashedMob(m_Monster);
 				}
 				return false;
 			}
 		} Callback(this);
 		m_World->ForEachEntityInBox(cBoundingBox(m_LeashToPos, 0.5, 1), Callback);
-		m_LeashToPos = nullptr;		
+		m_LeashToPos = nullptr;
 	}
 
 	if (m_EMState == ESCAPING)
@@ -194,11 +194,9 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 			ResetLoveMode();
 		}
 	}
-	else if (IsLeashed())
+	else if (IsLeashed())  // Mob is leashed to an entity
 	{
-		//Mob is leashed to an entity
-				
-		// TODO: leashed mobs can move around up to 5 blocks distance from leash origin
+		// TODO: leashed mobs in vanilla can move around up to 5 blocks distance from leash origin
 		MoveToPosition(m_LeashedTo->GetPosition());
 
 		// If distance to target > 10 break lead
@@ -207,9 +205,8 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 		if (Distance > 10.0)
 		{
 			LOGD("Lead broken (distance)");
-			m_LeashedTo->RemoveLeashedMob(this, false);			
+			m_LeashedTo->RemoveLeashedMob(this, false);
 		}
-			
 	}
 	else
 	{
@@ -228,7 +225,7 @@ void cPassiveMonster::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 					MoveToPosition(PlayerPos);
 				}
 			}
-		}		
+		}
 	}
 
 	// If we are in love mode but we have no partner, search for a partner neabry
@@ -321,13 +318,13 @@ void cPassiveMonster::OnRightClicked(cPlayer & a_Player)
 
 	// Using leads
 	m_LeadActionJustDone = false;
-	if (IsLeashed() && (GetLeashedTo() == &a_Player)) // a player can only unleash a mob leashed to him
-	{		
+	if (IsLeashed() && (GetLeashedTo() == &a_Player))  // a player can only unleash a mob leashed to him
+	{
 		a_Player.RemoveLeashedMob(this, !a_Player.IsGameModeCreative());
 	}
 	else if (IsLeashed())
 	{
-		// Mob is already leashed but client anticipates the server action and draws a leash link, so we need to send current leash to cancel it 
+		// Mob is already leashed but client anticipates the server action and draws a leash link, so we need to send current leash to cancel it
 		m_World->BroadcastLeashEntity(*this, *this->GetLeashedTo());
 	}
 	else if (HeldItem == E_ITEM_LEAD)
@@ -347,7 +344,7 @@ void cPassiveMonster::OnRightClicked(cPlayer & a_Player)
 
 
 void cPassiveMonster::SetLeashedTo(cEntity * a_Entity)
-{	
+{
 	m_LeashedTo = a_Entity;
 
 	m_LeadActionJustDone = true;
@@ -371,7 +368,7 @@ void cPassiveMonster::SetUnleashed(bool a_DropPickup)
 		Pickups.Add(cItem(E_ITEM_LEAD, 1, 0));
 		GetWorld()->SpawnItemPickups(Pickups, GetPosX() + 0.5, GetPosY() + 0.5, GetPosZ() + 0.5);
 	}
-	
+
 	m_LeadActionJustDone = true;
 	LOGD("Mob unleashed");
 }
