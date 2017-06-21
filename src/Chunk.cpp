@@ -514,7 +514,7 @@ void cChunk::GetThreeRandomNumbers(int & a_X, int & a_Y, int & a_Z, int a_MaxX, 
 	);
 
 	// MTRand gives an inclusive range [0, Max] but this gives the exclusive range [0, Max)
-	int OverallMax = (a_MaxX - 1) * (a_MaxY - 1) * (a_MaxZ - 1);
+	int OverallMax = (a_MaxX * a_MaxY * a_MaxZ) - 1;
 	int Random = m_World->GetTickRandomNumber(OverallMax);
 
 	a_X =   Random % a_MaxX;
@@ -1139,7 +1139,7 @@ bool cChunk::GrowTallGrass(int a_RelX, int a_RelY, int a_RelZ)
 		default:                      return false;
 	}
 	return UnboundedRelFastSetBlock(a_RelX, a_RelY, a_RelZ, E_BLOCK_BIG_FLOWER, LargeFlowerMeta) &&
-		UnboundedRelFastSetBlock(a_RelX, a_RelY + 1, a_RelZ, E_BLOCK_BIG_FLOWER, 8);
+		UnboundedRelFastSetBlock(a_RelX, a_RelY + 1, a_RelZ, E_BLOCK_BIG_FLOWER, 0x8 | LargeFlowerMeta);
 }
 
 

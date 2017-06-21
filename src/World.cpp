@@ -1733,7 +1733,7 @@ bool cWorld::GrowRipePlant(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_IsBy
 			}
 			else
 			{
-				BlockMeta += random.RandInt(2, 5);
+				BlockMeta += random.RandInt<NIBBLETYPE>(2, 5);
 				BlockMeta = std::min(BlockMeta, static_cast<NIBBLETYPE>(7));
 			}
 			FastSetBlock(a_BlockX, a_BlockY, a_BlockZ, BlockType, BlockMeta);
@@ -1768,7 +1768,7 @@ bool cWorld::GrowRipePlant(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_IsBy
 			}
 			else
 			{
-				BlockMeta += random.RandInt(2, 5);
+				BlockMeta += random.RandInt<NIBBLETYPE>(2, 5);
 				BlockMeta = std::min(BlockMeta, static_cast<NIBBLETYPE>(7));
 			}
 			FastSetBlock(a_BlockX, a_BlockY, a_BlockZ, BlockType, BlockMeta);
@@ -1791,7 +1791,7 @@ bool cWorld::GrowRipePlant(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_IsBy
 				}
 				else
 				{
-					BlockMeta += random.RandInt(2, 5);
+					BlockMeta += random.RandInt<NIBBLETYPE>(2, 5);
 					BlockMeta = std::min(BlockMeta, static_cast<NIBBLETYPE>(7));
 				}
 				FastSetBlock(a_BlockX, a_BlockY, a_BlockZ, BlockType, BlockMeta);
@@ -1823,7 +1823,7 @@ bool cWorld::GrowRipePlant(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_IsBy
 			}
 			else
 			{
-				BlockMeta += random.RandInt(2, 5);
+				BlockMeta += random.RandInt<NIBBLETYPE>(2, 5);
 				BlockMeta = std::min(BlockMeta, static_cast<NIBBLETYPE>(7));
 			}
 			FastSetBlock(a_BlockX, a_BlockY, a_BlockZ, BlockType, BlockMeta);
@@ -1846,7 +1846,7 @@ bool cWorld::GrowRipePlant(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_IsBy
 				}
 				else
 				{
-					BlockMeta += random.RandInt(2, 5);
+					BlockMeta += random.RandInt<NIBBLETYPE>(2, 5);
 					BlockMeta = std::min(BlockMeta, static_cast<NIBBLETYPE>(7));
 				}
 				FastSetBlock(a_BlockX, a_BlockY, a_BlockZ, BlockType, BlockMeta);
@@ -3923,15 +3923,16 @@ cFluidSimulator * cWorld::InitializeFluidSimulator(cIniFile & a_IniFile, const c
 	Printf(SimulatorNameKey, "%sSimulator", a_FluidName);
 	AString SimulatorSectionName;
 	Printf(SimulatorSectionName, "%sSimulator", a_FluidName);
-	AString SimulatorName = a_IniFile.GetValueSet("Physics", SimulatorNameKey, "Vanilla");
+
+	bool IsWater = (strcmp(a_FluidName, "Water") == 0);  // Used for defaults
+	AString DefaultSimulatorName = ((GetDimension() == dimNether) && IsWater) ? "Vaporise" : "Vanilla";
+	AString SimulatorName = a_IniFile.GetValueSet("Physics", SimulatorNameKey, DefaultSimulatorName);
 	if (SimulatorName.empty())
 	{
-		LOGWARNING("[Physics] %s not present or empty in %s, using the default of \"Vanilla\".", SimulatorNameKey.c_str(), GetIniFileName().c_str());
-		SimulatorName = "Vanilla";
+		LOGWARNING("[Physics] %s not present or empty in %s, using the default of \"%s\".", SimulatorNameKey.c_str(), GetIniFileName().c_str(), DefaultSimulatorName.c_str());
+		SimulatorName = DefaultSimulatorName;
 	}
-
 	cFluidSimulator * res = nullptr;
-	bool IsWater = (strcmp(a_FluidName, "Water") == 0);  // Used for defaults
 	int Rate = 1;
 	if (
 		(NoCaseCompare(SimulatorName, "vaporize") == 0) ||
