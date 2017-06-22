@@ -3232,7 +3232,7 @@ bool cWSSAnvil::LoadMonsterBaseFromNBT(cMonster & a_Monster, const cParsedNBT & 
 			int LeashIdx = a_NBT.FindChildByName(a_TagIdx, "Leash");
 			if (LeashIdx >= 0)
 			{
-				double PosX, PosY, PosZ;
+				double PosX = 0.0, PosY = 0.0, PosZ = 0.0;
 				bool KnotPosPresent = true;
 				int LeashDataLine = a_NBT.FindChildByName(LeashIdx, "X");
 				if (LeashDataLine >= 0)
