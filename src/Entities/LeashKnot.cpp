@@ -37,9 +37,9 @@ void cLeashKnot::OnRightClicked(cPlayer & a_Player)
 		cLeashKnot * m_Knot;
 		cPlayer * m_Player;
 
-		LookForLeasheds(cLeashKnot * a_Knot, cPlayer * a_Player) :
+		LookForLeasheds(cLeashKnot * a_Knot, cPlayer * a_PlayerLeashedTo) :
 			m_Knot(a_Knot),
-			m_Player(a_Player)
+			m_Player(a_PlayerLeashedTo)
 		{
 		}
 
