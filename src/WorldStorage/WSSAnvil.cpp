@@ -3233,26 +3233,41 @@ bool cWSSAnvil::LoadMonsterBaseFromNBT(cMonster & a_Monster, const cParsedNBT & 
 			if (LeashIdx >= 0)
 			{
 				double PosX, PosY, PosZ;
+				bool KnotPosPresent = true;
 				int LeashDataLine = a_NBT.FindChildByName(LeashIdx, "X");
 				if (LeashDataLine >= 0)
 				{
 					PosX = a_NBT.GetDouble(LeashDataLine);
+				}
+				else
+				{
+					KnotPosPresent = false;
 				}
 				LeashDataLine = a_NBT.FindChildByName(LeashIdx, "Y");
 				if (LeashDataLine >= 0)
 				{
 					PosY = a_NBT.GetDouble(LeashDataLine);
 				}
+				else
+				{
+					KnotPosPresent = false;
+				}
 				LeashDataLine = a_NBT.FindChildByName(LeashIdx, "Z");
 				if (LeashDataLine >= 0)
 				{
 					PosZ = a_NBT.GetDouble(LeashDataLine);
 				}
-
-				// Set leash pos for the mob
-				LOGD("The mob was leashed to position %f, %f, %f", PosX, PosY, PosZ);
-				cPassiveMonster * PassiveMonster = static_cast<cPassiveMonster *>(&a_Monster);
-				PassiveMonster->SetLeashToPos(new Vector3d(PosX, PosY, PosZ));
+				else
+				{
+					KnotPosPresent = false;
+				}
+				if (KnotPosPresent)
+				{
+					// Set leash pos for the mob
+					LOGD("The mob was leashed to position %f, %f, %f", PosX, PosY, PosZ);
+					cPassiveMonster * PassiveMonster = static_cast<cPassiveMonster *>(&a_Monster);
+					PassiveMonster->SetLeashToPos(new Vector3d(PosX, PosY, PosZ));
+				}
 			}
 		}
 	}
